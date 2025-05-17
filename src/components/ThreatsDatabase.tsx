@@ -6,7 +6,7 @@ import { FaExclamationTriangle, FaCalendarAlt, FaTag,
   FaChevronDown, FaChevronUp, FaCheck, FaTimes, FaList, FaTh, FaCopy } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { threatService } from "../services/threatService";
-import type { Threat, SeverityType } from "../types/threats";
+import type { Threat } from "../types/threats";
 
 // Animation variants
 const containerVariants = {
@@ -29,13 +29,7 @@ const ThreatsDatabase = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedThreat, setSelectedThreat] = useState<number | null>(null);
-  const [searchTerm] = useState("");
-  // const [filterSeverity, setFilterSeverity] = useState<SeverityType>("All");
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
-  // const [filterType, setFilterType] = useState<string>("All");
-  // const [filterSource, setFilterSource] = useState<string>("All");
-  // const [filterDateRange, setFilterDateRange] = useState<string>("All");
-  // const [sortBy, setSortBy] = useState<string>("newest");
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
   const [expandedTechniques, setExpandedTechniques] = useState<{[key: string]: boolean}>({});
   const modalRef = useRef<HTMLDivElement>(null);
@@ -58,70 +52,6 @@ const ThreatsDatabase = () => {
 
     fetchThreats();
   }, []);
-
-  // Enhanced filtering with multiple criteria
-  const filteredThreats = threats.filter(threat => {
-    // Search term filtering
-    const matchesSearch = 
-      searchTerm === "" ||
-      threat.names.some(name => name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      threat.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      threat.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      threat.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (threat.stolen_mod && threat.stolen_mod.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      threat.techniques.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (threat.triggered_rules && threat.triggered_rules.some(rule => rule.toLowerCase().includes(searchTerm.toLowerCase())));
-    
-    // Severity filtering
-    const matchesSeverity = filterSeverity === "All" || threat.severity === filterSeverity;
-    
-    // Type filtering
-    const matchesType = filterType === "All" || threat.type === filterType;
-    
-    // Source filtering
-    const matchesSource = filterSource === "All" || threat.source === filterSource;
-    
-    // Date range filtering
-    let matchesDate = true;
-    if (filterDateRange !== "All") {
-      const threatDate = new Date(threat.date);
-      const today = new Date();
-      
-      if (filterDateRange === "30days") {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(today.getDate() - 30);
-        matchesDate = threatDate >= thirtyDaysAgo;
-      } else if (filterDateRange === "7days") {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(today.getDate() - 7);
-        matchesDate = threatDate >= sevenDaysAgo;
-      }
-    }
-    
-    return matchesSearch && matchesSeverity && matchesType && matchesSource && matchesDate;
-  }).sort((a, b) => {
-    // Sorting logic
-    if (sortBy === "newest") {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    } else if (sortBy === "oldest") {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    } else if (sortBy === "severity-high") {
-      const severityOrder = { "Critical": 4, "High": 3, "Medium": 2, "Low": 1 };
-      return severityOrder[b.severity] - severityOrder[a.severity];
-    } else if (sortBy === "severity-low") {
-      const severityOrder = { "Critical": 4, "High": 3, "Medium": 2, "Low": 1 };
-      return severityOrder[a.severity] - severityOrder[b.severity];
-    } else if (sortBy === "name-az") {
-      return a.names[0].localeCompare(b.names[0]);
-    } else if (sortBy === "name-za") {
-      return b.names[0].localeCompare(a.names[0]);
-    }
-    return 0;
-  });
-
-  // Get unique filter options
-  // const uniqueTypes = ["All", ...Array.from(new Set(threats.map(threat => threat.type)))];
-  // const uniqueSources = ["All", ...Array.from(new Set(threats.map(threat => threat.source)))];
 
   // Count threats by severity
   const severityCounts = {
@@ -171,6 +101,11 @@ const ThreatsDatabase = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [selectedThreat]);
+
+  // Sort threats by newest first
+  const sortedThreats = [...threats].sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
 
   return (
     <section id="threats" className="py-12 px-4 sm:px-6 md:px-8 relative z-10">
@@ -271,19 +206,6 @@ const ThreatsDatabase = () => {
           ) : (
             <>
               <div className="flex flex-col md:flex-row gap-4 items-start justify-between mb-6">
-                {/* 
-                <div className="relative w-full md:w-80">
-                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                  <input
-                    type="text"
-                    placeholder="Search threats..."
-                    className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-transparent transition-all"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                */}
-                
                 <div className="flex items-center space-x-3 w-full md:w-auto">
                   <Button
                     variant="outline"
@@ -303,142 +225,8 @@ const ThreatsDatabase = () => {
                     <FaTh className="mr-2" />
                     Cards
                   </Button>
-                  {/*
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className={`border-gray-700 ${showFilterPanel ? "bg-red-900/30 text-white border-red-700" : "text-gray-400"} hover:text-white transition-colors`}
-                    onClick={() => setShowFilterPanel(!showFilterPanel)}
-                  >
-                    <FaFilter className="mr-2" />
-                    Filters
-                    {showFilterPanel ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
-                  </Button>
-                  */}
                 </div>
               </div>
-
-              {/*
-              <AnimatePresence>
-                {showFilterPanel && (
-                  <motion.div 
-                    className="mb-6 bg-gray-900/50 border border-gray-700 rounded-lg p-4"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Severity</label>
-                        <select 
-                          className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                          value={filterSeverity}
-                          onChange={(e) => setFilterSeverity(e.target.value as SeverityType)}
-                        >
-                          {["All", "Critical", "High", "Medium", "Low"].map((severity) => (
-                            <option key={severity} value={severity}>{severity}</option>
-                          ))}
-                        </select>
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Threat Type</label>
-                        <select 
-                          className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                          value={filterType}
-                          onChange={(e) => setFilterType(e.target.value)}
-                        >
-                          {uniqueTypes.map((type) => (
-                            <option key={type} value={type}>{type}</option>
-                          ))}
-                        </select>
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Source</label>
-                        <select 
-                          className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                          value={filterSource}
-                          onChange={(e) => setFilterSource(e.target.value)}
-                        >
-                          {uniqueSources.map((source) => (
-                            <option key={source} value={source}>{source}</option>
-                          ))}
-                        </select>
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Date Range</label>
-                        <select 
-                          className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                          value={filterDateRange}
-                          onChange={(e) => setFilterDateRange(e.target.value)}
-                        >
-                          <option value="All">All Time</option>
-                          <option value="30days">Last 30 Days</option>
-                          <option value="7days">Last 7 Days</option>
-                        </select>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 border-t border-gray-700 pt-4">
-                      <label className="block text-sm font-medium text-gray-400 mb-2">Sort By</label>
-                      <div className="flex flex-wrap gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className={`border-gray-700 ${sortBy === "newest" ? "bg-gray-700 text-white" : "text-gray-400"}`}
-                          onClick={() => setSortBy("newest")}
-                        >
-                          Newest
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className={`border-gray-700 ${sortBy === "oldest" ? "bg-gray-700 text-white" : "text-gray-400"}`}
-                          onClick={() => setSortBy("oldest")}
-                        >
-                          Oldest
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className={`border-gray-700 ${sortBy === "severity-high" ? "bg-gray-700 text-white" : "text-gray-400"}`}
-                          onClick={() => setSortBy("severity-high")}
-                        >
-                          Highest Severity
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className={`border-gray-700 ${sortBy === "severity-low" ? "bg-gray-700 text-white" : "text-gray-400"}`}
-                          onClick={() => setSortBy("severity-low")}
-                        >
-                          Lowest Severity
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className={`border-gray-700 ${sortBy === "name-az" ? "bg-gray-700 text-white" : "text-gray-400"}`}
-                          onClick={() => setSortBy("name-az")}
-                        >
-                          Name (A-Z)
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className={`border-gray-700 ${sortBy === "name-za" ? "bg-gray-700 text-white" : "text-gray-400"}`}
-                          onClick={() => setSortBy("name-za")}
-                        >
-                          Name (Z-A)
-                        </Button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              */}
 
               {viewMode === "table" ? (
                 <div className="overflow-x-auto">
@@ -460,8 +248,8 @@ const ThreatsDatabase = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-800/50">
-                      {filteredThreats.length > 0 ? (
-                        filteredThreats.map((threat) => (
+                      {sortedThreats.length > 0 ? (
+                        sortedThreats.map((threat) => (
                           <motion.tr 
                             key={threat.id} 
                             className="hover:bg-gray-800/30 transition-colors"
@@ -513,7 +301,7 @@ const ThreatsDatabase = () => {
                       ) : (
                         <tr>
                           <td colSpan={6} className="py-8 text-center text-gray-400">
-                            No threats found matching your search criteria.
+                            No threats found.
                           </td>
                         </tr>
                       )}
@@ -529,8 +317,8 @@ const ThreatsDatabase = () => {
                   whileInView="visible"
                   viewport={{ once: true, margin: "-100px" }}
                 >
-                  {filteredThreats.length > 0 ? (
-                    filteredThreats.map((threat) => (
+                  {sortedThreats.length > 0 ? (
+                    sortedThreats.map((threat) => (
                       <motion.div 
                         key={threat.id}
                         className="bg-gray-900/40 border border-gray-700 rounded-lg overflow-hidden hover:border-gray-600 transition-all shadow-lg"
@@ -616,7 +404,7 @@ const ThreatsDatabase = () => {
                     ))
                   ) : (
                     <div className="col-span-3 py-8 text-center text-gray-400">
-                      No threats found matching your search criteria.
+                      No threats found.
                     </div>
                   )}
                 </motion.div>
