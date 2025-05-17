@@ -12,6 +12,7 @@ const ParticleBackground = () => {
     
     // Set canvas dimensions
     const setCanvasDimensions = () => {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight; // Make taller to cover scroll area
     };
@@ -34,8 +35,8 @@ const ParticleBackground = () => {
       color: string;
       
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * (canvas?.width || window.innerWidth);
+        this.y = Math.random() * (canvas?.height || window.innerHeight);
         this.size = Math.random() * 3 + 1.5;
         this.speedX = (Math.random() - 0.5) * 1.25;
         this.speedY = (Math.random() - 0.5) * 1.25;
@@ -43,6 +44,8 @@ const ParticleBackground = () => {
       }
       
       update() {
+        if (!canvas) return;
+        
         // Bounce off edges
         if (this.x > canvas.width || this.x < 0) {
           this.speedX = -this.speedX;

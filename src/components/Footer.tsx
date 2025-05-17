@@ -1,4 +1,4 @@
-import { FaGithub, FaTwitter, FaDiscord, FaShieldAlt, FaHeart } from "react-icons/fa";
+import { FaGithub, FaDiscord, FaHeart } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const Footer = () => {

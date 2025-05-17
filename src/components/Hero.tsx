@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { FaDownload, FaGithub, FaExclamationTriangle } from "react-icons/fa";
+import { FaDownload, FaGithub } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const Hero = () => {

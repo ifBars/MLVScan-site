@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
-import { FaExclamationTriangle, FaSearch, FaCalendarAlt, FaTag, FaFilter, 
+import { FaExclamationTriangle, FaCalendarAlt, FaTag, 
   FaExclamationCircle, FaShieldAlt, FaSpinner, FaEye, FaInfoCircle, 
-  FaExclamationCircle as FaCircle, FaCode, FaFileAlt, FaClipboard, 
+  FaExclamationCircle as FaCircle, FaCode, FaFileAlt, 
   FaChevronDown, FaChevronUp, FaCheck, FaTimes, FaList, FaTh, FaCopy } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { threatService } from "../services/threatService";
@@ -29,9 +29,8 @@ const ThreatsDatabase = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedThreat, setSelectedThreat] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm] = useState("");
   const [filterSeverity, setFilterSeverity] = useState<SeverityType>("All");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [filterType, setFilterType] = useState<string>("All");
   const [filterSource, setFilterSource] = useState<string>("All");
@@ -40,7 +39,6 @@ const ThreatsDatabase = () => {
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
   const [expandedTechniques, setExpandedTechniques] = useState<{[key: string]: boolean}>({});
   const modalRef = useRef<HTMLDivElement>(null);
-  const [showFilterPanel, setShowFilterPanel] = useState(false);
 
   // Fetch threats data
   useEffect(() => {
@@ -320,7 +318,7 @@ const ThreatsDatabase = () => {
                 </div>
               </div>
 
-              {/* Advanced Filter Panel */}
+              {/*
               <AnimatePresence>
                 {showFilterPanel && (
                   <motion.div 
@@ -331,7 +329,6 @@ const ThreatsDatabase = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      {/* Severity Filter */}
                       <div>
                         <label className="block text-sm font-medium text-gray-400 mb-2">Severity</label>
                         <select 
@@ -345,7 +342,6 @@ const ThreatsDatabase = () => {
                         </select>
                       </div>
                       
-                      {/* Type Filter */}
                       <div>
                         <label className="block text-sm font-medium text-gray-400 mb-2">Threat Type</label>
                         <select 
@@ -359,7 +355,6 @@ const ThreatsDatabase = () => {
                         </select>
                       </div>
                       
-                      {/* Source Filter */}
                       <div>
                         <label className="block text-sm font-medium text-gray-400 mb-2">Source</label>
                         <select 
@@ -373,7 +368,6 @@ const ThreatsDatabase = () => {
                         </select>
                       </div>
                       
-                      {/* Date Range Filter */}
                       <div>
                         <label className="block text-sm font-medium text-gray-400 mb-2">Date Range</label>
                         <select 
@@ -444,6 +438,7 @@ const ThreatsDatabase = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+              */}
 
               {viewMode === "table" ? (
                 <div className="overflow-x-auto">
