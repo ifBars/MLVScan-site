@@ -1,0 +1,117 @@
+---
+description: UI in React
+globs: 
+alwaysApply: false
+---
+# .cursor IDE Style Guide for Modern Minimalistic React (shadcn/ui)
+
+## Purpose
+
+This guide defines conventions and best practices for building clean, modern UI/UX in React using the `shadcn/ui` component library. It is optimized for use in `.cursor` IDE projects.
+
+---
+
+## ✨ Design Principles
+
+* **Minimalism**: Prioritize clarity and simplicity. Avoid unnecessary visual clutter.
+* **Consistency**: Use a limited color palette, consistent spacing, and uniform component usage.
+* **Accessibility**: Ensure all components follow accessibility best practices.
+* **Responsiveness**: Mobile-first design with responsive layouts.
+* **Performance**: Avoid unnecessary re-renders and large libraries.
+
+---
+
+## 🔧 Folder Structure (Recommended)
+
+```
+/src
+  /components
+    /ui           # Wrapped shadcn components if needed
+    /custom       # Custom shared UI components
+  /pages
+  /lib            # Utility functions
+  /hooks          # Custom hooks
+  /styles         # Tailwind + global styles
+  /types          # TypeScript interfaces & types
+```
+
+---
+
+## 🧱 UI Components (shadcn/ui)
+
+* Use `shadcn/ui` as the base for buttons, inputs, dialogs, etc.
+* Wrap components in `/components/ui` if customization is frequent.
+* Extend components only when absolutely necessary (no premature abstraction).
+
+### Example
+
+```tsx
+import { Button } from "@/components/ui/button"
+
+<Button variant="outline" className="rounded-2xl shadow-sm px-4 py-2">
+  Click me
+</Button>
+```
+
+---
+
+## 🎨 Styling Guidelines
+
+* **TailwindCSS**: Always use Tailwind utility classes.
+* **Spacing**: Use Tailwind spacing scale (e.g., `p-2`, `mt-4`).
+* **Rounded corners**: Default to `rounded-2xl`.
+* **Shadows**: Use `shadow-sm` or `shadow-md`, no heavy drop shadows.
+* **Color palette**: Stick to neutral colors unless contextually needed.
+
+---
+
+## 📐 Layout
+
+* Prefer `grid` and `flex` over absolute positioning.
+* Center content using `mx-auto`, `justify-center`, `items-center`.
+* Add padding: `p-4` or `md:p-6` for sections.
+
+---
+
+## 🛠 Development Tips
+
+* Use `useCallback`, `useMemo`, and `React.memo` where performance matters.
+* Use `zod` for schema validation if needed.
+* Use `clsx` or `cn` utility for conditional classNames.
+
+```ts
+import { cn } from '@/lib/utils'
+
+<Button className={cn("w-full", isActive && "bg-primary")}>Submit</Button>
+```
+
+---
+
+## ✅ Checklists
+
+### Component Review Checklist
+
+* [ ] Uses `shadcn/ui` base components
+* [ ] Tailwind styling only
+* [ ] Responsive layout
+* [ ] Minimal custom logic
+* [ ] Accessibility tested (keyboard nav, screen reader labels)
+
+### PR Checklist
+
+* [ ] Follows folder structure
+* [ ] Component is reusable or scoped
+* [ ] No inline styles (use Tailwind only)
+* [ ] Naming is consistent
+* [ ] Types are defined (if using TS)
+
+---
+
+## 📚 References
+
+* [shadcn/ui documentation](https://ui.shadcn.com/)
+* [TailwindCSS docs](https://tailwindcss.com/docs)
+* [Radix UI accessibility](https://www.radix-ui.com/docs/primitives/overview/accessibility)
+
+---
+
