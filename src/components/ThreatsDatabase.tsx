@@ -30,12 +30,12 @@ const ThreatsDatabase = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedThreat, setSelectedThreat] = useState<number | null>(null);
   const [searchTerm] = useState("");
-  const [filterSeverity, setFilterSeverity] = useState<SeverityType>("All");
+  // const [filterSeverity, setFilterSeverity] = useState<SeverityType>("All");
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
-  const [filterType, setFilterType] = useState<string>("All");
-  const [filterSource, setFilterSource] = useState<string>("All");
-  const [filterDateRange, setFilterDateRange] = useState<string>("All");
-  const [sortBy, setSortBy] = useState<string>("newest");
+  // const [filterType, setFilterType] = useState<string>("All");
+  // const [filterSource, setFilterSource] = useState<string>("All");
+  // const [filterDateRange, setFilterDateRange] = useState<string>("All");
+  // const [sortBy, setSortBy] = useState<string>("newest");
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
   const [expandedTechniques, setExpandedTechniques] = useState<{[key: string]: boolean}>({});
   const modalRef = useRef<HTMLDivElement>(null);
@@ -120,8 +120,8 @@ const ThreatsDatabase = () => {
   });
 
   // Get unique filter options
-  const uniqueTypes = ["All", ...Array.from(new Set(threats.map(threat => threat.type)))];
-  const uniqueSources = ["All", ...Array.from(new Set(threats.map(threat => threat.source)))];
+  // const uniqueTypes = ["All", ...Array.from(new Set(threats.map(threat => threat.type)))];
+  // const uniqueSources = ["All", ...Array.from(new Set(threats.map(threat => threat.source)))];
 
   // Count threats by severity
   const severityCounts = {
