@@ -45,7 +45,7 @@ const Navbar = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="w-10 h-10 bg-gradient-to-br from-red-600/30 to-red-800/30 rounded-full backdrop-blur-sm border border-red-500/20 shadow-lg shadow-red-900/10 flex items-center justify-center">
-              <img src="/MLVScan-Shield.png" alt="MLVScan Logo" className="w-7 h-7" />
+              <img src={`${import.meta.env.BASE_URL || ''}MLVScan-Shield.png`} alt="MLVScan Logo" className="w-7 h-7" />
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-red-400">
               MLVScan

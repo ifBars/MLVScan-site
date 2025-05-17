@@ -21,7 +21,7 @@ const Hero = () => {
             className="mb-8"
           >
             <div className="bg-gradient-to-br from-red-600/30 to-red-800/30 p-5 rounded-full backdrop-blur-sm border border-red-500/20 shadow-lg shadow-red-900/10 flex items-center justify-center">
-              <img src="/MLVScan-Shield.png" alt="MLVScan Logo" className="w-12 h-12" />
+              <img src={`${import.meta.env.BASE_URL || ''}MLVScan-Shield.png`} alt="MLVScan Logo" className="w-12 h-12" />
             </div>
           </motion.div>
           

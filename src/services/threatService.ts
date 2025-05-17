@@ -4,10 +4,9 @@ class ThreatService {
   private baseUrl: string;
 
   constructor() {
-    // For GitHub Pages hosting, use the relative path to the JSON file
-    this.baseUrl = process.env.NODE_ENV === 'production' 
-      ? `${process.env.PUBLIC_URL || ''}/data` 
-      : '/data';
+    // For both development and production environments
+    // In Vite, public directory assets are served at the root path
+    this.baseUrl = `${import.meta.env.BASE_URL || ''}`;
   }
 
   /**
@@ -15,7 +14,7 @@ class ThreatService {
    */
   async getAllThreats(): Promise<Threat[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/threats.json`);
+      const response = await fetch(`${this.baseUrl}data/threats.json`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch threats: ${response.statusText}`);
